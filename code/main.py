@@ -39,7 +39,7 @@ def gen_example(wordtoix, algo):
     filepath = '%s/example_filenames.txt' % (cfg.DATA_DIR)
     data_dic = {}
     with open(filepath, "r") as f:
-        filenames = f.read().split('\n')
+        filenames = f.read().split('\n') #
         for name in filenames:
             if len(name) == 0:
                 continue
@@ -121,7 +121,7 @@ if __name__ == "__main__":
     # Get data loader
     imsize = cfg.TREE.BASE_SIZE * (2 ** (cfg.TREE.BRANCH_NUM - 1))
     image_transform = transforms.Compose([
-        transforms.Resize(int(imsize * 76 / 64)),
+        transforms.Resize(int(imsize * 76 / 64)), #
         transforms.RandomCrop(imsize),
         transforms.RandomHorizontalFlip()])
     dataset = TextDataset(cfg.DATA_DIR, split_dir,
