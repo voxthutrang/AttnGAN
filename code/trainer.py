@@ -429,7 +429,7 @@ class condGANTrainer(object):
                         fullpath = '%s_s%d.png' % (s_tmp, k)
                         im.save(fullpath)
 
-    def gen_example(self, data_dic):
+    def gen_example(self, data_dic, save_attention_maps):
         if cfg.TRAIN.NET_G == '':
             print('Error: the path for morels is not found!')
         else:
@@ -459,7 +459,8 @@ class condGANTrainer(object):
             for key in data_dic:
                 save_dir = '%s/%s' % (s_tmp, key)
                 mkdir_p(save_dir)
-                captions, cap_lens, sorted_indices = data_dic[key]
+                captions, cap_lens, sorted_indices, s = data_dic[key]
+                print(s)
 
                 batch_size = captions.shape[0]
                 nz = cfg.GAN.Z_DIM
@@ -487,7 +488,7 @@ class condGANTrainer(object):
                     # G attention
                     cap_lens_np = cap_lens.cpu().data.numpy()
                     for j in range(batch_size):
-                        save_name = '%s/%d_s_%d' % (save_dir, i, sorted_indices[j])
+                        save_name = '%s/%d_%s' % (save_dir, i, s[sorted_indices[j]].replace(' ','-'))
                         for k in range(len(fake_imgs)):
                             im = fake_imgs[k][j].data.cpu().numpy()
                             im = (im + 1.0) * 127.5
@@ -498,20 +499,21 @@ class condGANTrainer(object):
                             im = Image.fromarray(im)
                             fullpath = '%s_g%d.png' % (save_name, k)
                             im.save(fullpath)
-
-                        for k in range(len(attention_maps)):
-                            if len(fake_imgs) > 1:
-                                im = fake_imgs[k + 1].detach().cpu()
-                            else:
-                                im = fake_imgs[0].detach().cpu()
-                            attn_maps = attention_maps[k]
-                            att_sze = attn_maps.size(2)
-                            img_set, sentences = \
-                                build_super_images2(im[j].unsqueeze(0),
-                                                    captions[j].unsqueeze(0),
-                                                    [cap_lens_np[j]], self.ixtoword,
-                                                    [attn_maps[j]], att_sze)
-                            if img_set is not None:
-                                im = Image.fromarray(img_set)
-                                fullpath = '%s_a%d.png' % (save_name, k)
-                                im.save(fullpath)
+                            
+                        if save_attention_maps:
+                            for k in range(len(attention_maps)):
+                                if len(fake_imgs) > 1:
+                                    im = fake_imgs[k + 1].detach().cpu()
+                                else:
+                                    im = fake_imgs[0].detach().cpu()
+                                attn_maps = attention_maps[k]
+                                att_sze = attn_maps.size(2)
+                                img_set, sentences = \
+                                    build_super_images2(im[j].unsqueeze(0),
+                                                        captions[j].unsqueeze(0),
+                                                        [cap_lens_np[j]], self.ixtoword,
+                                                        [attn_maps[j]], att_sze)
+                                if img_set is not None:
+                                    im = Image.fromarray(img_set)
+                                    fullpath = '%s_a%d.png' % (save_name, k)
+                                    im.save(fullpath)

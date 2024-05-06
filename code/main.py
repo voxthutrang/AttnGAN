@@ -29,24 +29,25 @@ def parse_args():
     parser.add_argument('--gpu', dest='gpu_id', type=int, default=-1)
     parser.add_argument('--data_dir', dest='data_dir', type=str, default='')
     parser.add_argument('--manualSeed', type=int, help='manual seed')
+    parser.add_argument('--save_maps', action='store_true')
     args = parser.parse_args()
     return args
 
 
-def gen_example(wordtoix, algo):
+def gen_example(wordtoix, algo, args):
     '''generate images from example sentences'''
     from nltk.tokenize import RegexpTokenizer
     filepath = '%s/example_filenames.txt' % (cfg.DATA_DIR)
     data_dic = {}
     with open(filepath, "r") as f:
-        filenames = f.read().split('\n') #
+        filenames = f.read().split('\n')
         for name in filenames:
             if len(name) == 0:
                 continue
             filepath = '%s/%s.txt' % (cfg.DATA_DIR, name)
             with open(filepath, "r") as f:
                 print('Load from:', name)
-                sentences = f.read().split('\n') #
+                sentences = f.read().split('\n')
                 # a list of indices for a sentence
                 captions = []
                 cap_lens = []
@@ -70,6 +71,7 @@ def gen_example(wordtoix, algo):
             max_len = np.max(cap_lens)
 
             sorted_indices = np.argsort(cap_lens)[::-1]
+            s = sentences
             cap_lens = np.asarray(cap_lens)
             cap_lens = cap_lens[sorted_indices]
             cap_array = np.zeros((len(captions), max_len), dtype='int64')
@@ -79,8 +81,8 @@ def gen_example(wordtoix, algo):
                 c_len = len(cap)
                 cap_array[i, :c_len] = cap
             key = name[(name.rfind('/') + 1):]
-            data_dic[key] = [cap_array, cap_lens, sorted_indices]
-    algo.gen_example(data_dic)
+            data_dic[key] = [cap_array, cap_lens, sorted_indices, s]
+    algo.gen_example(data_dic, args.save_maps)
 
 
 if __name__ == "__main__":
@@ -121,7 +123,7 @@ if __name__ == "__main__":
     # Get data loader
     imsize = cfg.TREE.BASE_SIZE * (2 ** (cfg.TREE.BRANCH_NUM - 1))
     image_transform = transforms.Compose([
-        transforms.Resize(int(imsize * 76 / 64)), #
+        transforms.Scale(int(imsize * 76 / 64)),
         transforms.RandomCrop(imsize),
         transforms.RandomHorizontalFlip()])
     dataset = TextDataset(cfg.DATA_DIR, split_dir,
@@ -143,6 +145,6 @@ if __name__ == "__main__":
         if cfg.B_VALIDATION:
             algo.sampling(split_dir)  # generate images for the whole valid dataset
         else:
-            gen_example(dataset.wordtoix, algo)  # generate images for customized captions
+            gen_example(dataset.wordtoix, algo, args)  # generate images for customized captions
     end_t = time.time()
     print('Total time for training:', end_t - start_t)
