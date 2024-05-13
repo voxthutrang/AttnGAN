@@ -139,7 +139,7 @@ def load_data(fullpath):
                 if os.path.isfile(filename):
                     img = scipy.misc.imread(filename)
                     images.append(img)
-    print('images', len(images), images[0].shape)
+#    print('images', len(images), images[0].shape)
     return images
 
 
