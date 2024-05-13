@@ -200,7 +200,7 @@ def main(unused_argv=None):
 
                 # Build a Graph that computes the logits predictions from the
                 # inference model.
-                inputs = tf.placeholder( tf.float32, [FLAGS.batch_size, 299, 299, 3], name='inputs')
+                inputs = tf.compat.v1.placeholder( tf.float32, [FLAGS.batch_size, 299, 299, 3], name='inputs')
                 # print(inputs)
 
                 logits, _ = inference(inputs, num_classes)
