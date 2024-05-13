@@ -84,7 +84,7 @@ def l1_l2_regularizer(weight_l1=1.0, weight_l2=1.0, scope=None):
     a regularizer function.
   """
   def regularizer(tensor):
-    with tf.name_scope(scope, 'L1L2Regularizer', [tensor]):
+    with tf.name_scope('L1L2Regularizer'):
       weight_l1_t = tf.convert_to_tensor(weight_l1,
                                          dtype=tensor.dtype.base_dtype,
                                          name='weight_l1')
