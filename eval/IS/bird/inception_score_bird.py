@@ -38,20 +38,20 @@ else:
     import pickle
 
 
-FLAGS = tf.app.flags.FLAGS
+FLAGS = tf.compat.v1.flags.FLAGS
 
-tf.app.flags.DEFINE_string('checkpoint_dir',
+tf.compat.v1.flags.DEFINE_string('checkpoint_dir',
                            './inception_finetuned_models/birds_valid299/model.ckpt',
                            """Path where to read model checkpoints.""")
 
-tf.app.flags.DEFINE_string('image_folder', '', """Path where to load the images """)
+tf.compat.v1.flags.DEFINE_string('image_folder', '', """Path where to load the images """)
 
-tf.app.flags.DEFINE_integer('num_classes', 50,      # 20 for flowers
+tf.compat.v1.flags.DEFINE_integer('num_classes', 50,      # 20 for flowers
                             """Number of classes """)
-tf.app.flags.DEFINE_integer('splits', 10,
+tf.compat.v1.flags.DEFINE_integer('splits', 10,
                             """Number of splits """)
-tf.app.flags.DEFINE_integer('batch_size', 64, "batch size")
-tf.app.flags.DEFINE_integer('gpu', 0, "The ID of GPU to use")
+tf.compat.v1.flags.DEFINE_integer('batch_size', 64, "batch size")
+tf.compat.v1.flags.DEFINE_integer('gpu', 0, "The ID of GPU to use")
 # Batch normalization. Constant governing the exponential moving average of
 # the 'global' mean and variance for all activations.
 BATCHNORM_MOVING_AVERAGE_DECAY = 0.9997
@@ -225,4 +225,4 @@ def main(unused_argv=None):
 
 
 if __name__ == '__main__':
-    tf.app.run()
+    tf.compat.v1.app.run()
