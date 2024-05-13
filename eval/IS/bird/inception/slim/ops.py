@@ -77,7 +77,7 @@ def batch_norm(inputs,
 
   """
   inputs_shape = inputs.get_shape()
-  with tf.variable_scope(scope, 'BatchNorm', [inputs], reuse=reuse):
+  with tf.compat.v1.variable_scope(scope, 'BatchNorm', [inputs], reuse=reuse):
     axis = list(range(len(inputs_shape) - 1))
     params_shape = inputs_shape[-1:]
     # Allocate parameters for the beta and gamma of the normalization.
@@ -210,7 +210,7 @@ def conv2d(inputs,
     a tensor representing the output of the operation.
 
   """
-  with tf.variable_scope(scope, 'Conv', [inputs], reuse=reuse):
+  with tf.compat.v1.variable_scope(scope, 'Conv', [inputs], reuse=reuse):
     kernel_h, kernel_w = _two_element_tuple(kernel_size)
     stride_h, stride_w = _two_element_tuple(stride)
     num_filters_in = inputs.get_shape()[-1]
@@ -285,7 +285,7 @@ def fc(inputs,
   Returns:
      the tensor variable representing the result of the series of operations.
   """
-  with tf.variable_scope(scope, 'FC', [inputs], reuse=reuse):
+  with tf.compat.v1.variable_scope(scope, 'FC', [inputs], reuse=reuse):
     num_units_in = inputs.get_shape()[1]
     weights_shape = [num_units_in, num_units_out]
     weights_initializer = tf.truncated_normal_initializer(stddev=stddev)
@@ -466,7 +466,7 @@ def repeat_op(repetitions, inputs, op, *args, **kwargs):
     ValueError: if the op is unknown or wrong.
   """
   scope = kwargs.pop('scope', None)
-  with tf.variable_scope(scope, 'RepeatOp', [inputs]):
+  with tf.compat.v1.variable_scope(scope, 'RepeatOp', [inputs]):
     tower = inputs
     for _ in range(repetitions):
       tower = op(tower, *args, **kwargs)
