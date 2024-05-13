@@ -22,7 +22,7 @@ from PIL import Image
 
 from inception.slim import slim
 import numpy as np
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 
 import math
@@ -38,20 +38,22 @@ else:
     import pickle
 
 
-FLAGS = tf.compat.v1.flags.FLAGS
+FLAGS = tf.app.flags.FLAGS
 
-tf.compat.v1.flags.DEFINE_string('checkpoint_dir',
-                           './inception_finetuned_models/birds_valid299/model.ckpt',
+tf.app.flags.DEFINE_string('checkpoint_dir',
+                           './inception_finetuned_models/birds_valid299/model.ckpt-5000',
                            """Path where to read model checkpoints.""")
 
-tf.compat.v1.flags.DEFINE_string('image_folder', '', """Path where to load the images """)
+tf.app.flags.DEFINE_string('image_folder', 
+							'/Users/han/Documents/CUB_200_2011/CUB_200_2011/images',
+							"""Path where to load the images """)
 
-tf.compat.v1.flags.DEFINE_integer('num_classes', 50,      # 20 for flowers
+tf.app.flags.DEFINE_integer('num_classes', 50,      # 20 for flowers
                             """Number of classes """)
-tf.compat.v1.flags.DEFINE_integer('splits', 10,
+tf.app.flags.DEFINE_integer('splits', 10,
                             """Number of splits """)
-tf.compat.v1.flags.DEFINE_integer('batch_size', 64, "batch size")
-tf.compat.v1.flags.DEFINE_integer('gpu', 0, "The ID of GPU to use")
+tf.app.flags.DEFINE_integer('batch_size', 64, "batch size")
+tf.app.flags.DEFINE_integer('gpu', 1, "The ID of GPU to use")
 # Batch normalization. Constant governing the exponential moving average of
 # the 'global' mean and variance for all activations.
 BATCHNORM_MOVING_AVERAGE_DECAY = 0.9997
@@ -69,9 +71,10 @@ def preprocess(img):
     # img = Image.fromarray(img, 'RGB')
     if len(img.shape) == 2:
         img = np.resize(img, (img.shape[0], img.shape[1], 3))
-    img = scipy.misc.imresize(img, (299, 299, 3), interp='bilinear')
+    img = scipy.misc.imresize(img, (299, 299, 3),
+                              interp='bilinear')
     img = img.astype(np.float32)
-    # [0, 255] --> [0, 2] --> [-1, 1]
+    # [0, 255] --> [0, 1] --> [-1, 1]
     img = img / 127.5 - 1.
     # print('img', img.shape, img.max(), img.min())
     return np.expand_dims(img, 0)
@@ -190,9 +193,9 @@ def inference(images, num_classes, for_training=False, restore_logits=True,
 def main(unused_argv=None):
     """Evaluate model on Dataset for a number of steps."""
     with tf.Graph().as_default():
-        config = tf.compat.v1.ConfigProto(allow_soft_placement=True)
+        config = tf.ConfigProto(allow_soft_placement=True)
         config.gpu_options.allow_growth = True
-        with tf.compat.v1.Session(config=config) as sess:
+        with tf.Session(config=config) as sess:
             with tf.device("/gpu:%d" % FLAGS.gpu):
                 # Number of classes in the Dataset label set plus 1.
                 # Label 0 is reserved for an (unused) background class.
@@ -200,7 +203,9 @@ def main(unused_argv=None):
 
                 # Build a Graph that computes the logits predictions from the
                 # inference model.
-                inputs = tf.compat.v1.placeholder( tf.float32, [FLAGS.batch_size, 299, 299, 3], name='inputs')
+                inputs = tf.placeholder(
+                    tf.float32, [FLAGS.batch_size, 299, 299, 3],
+                    name='inputs')
                 # print(inputs)
 
                 logits, _ = inference(inputs, num_classes)
@@ -225,4 +230,4 @@ def main(unused_argv=None):
 
 
 if __name__ == '__main__':
-    tf.compat.v1.app.run()
+    tf.app.run()
