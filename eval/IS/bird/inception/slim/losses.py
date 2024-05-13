@@ -45,7 +45,7 @@ def l1_regularizer(weight=1.0, scope=None):
     a regularizer function.
   """
   def regularizer(tensor):
-    with tf.name_scope(scope, 'L1Regularizer', [tensor]):
+    with tf.name_scope('L1Regularizer'):
       l1_weight = tf.convert_to_tensor(weight,
                                        dtype=tensor.dtype.base_dtype,
                                        name='weight')
@@ -64,7 +64,7 @@ def l2_regularizer(weight=1.0, scope=None):
     a regularizer function.
   """
   def regularizer(tensor):
-    with tf.name_scope(scope, 'L2Regularizer', [tensor]):
+    with tf.name_scope('L2Regularizer'):
       l2_weight = tf.convert_to_tensor(weight,
                                        dtype=tensor.dtype.base_dtype,
                                        name='weight')
@@ -110,7 +110,7 @@ def l1_loss(tensor, weight=1.0, scope=None):
   Returns:
     the L1 loss op.
   """
-  with tf.name_scope(scope, 'L1Loss', [tensor]):
+  with tf.name_scope('L1Loss'):
     weight = tf.convert_to_tensor(weight,
                                   dtype=tensor.dtype.base_dtype,
                                   name='loss_weight')
@@ -130,7 +130,7 @@ def l2_loss(tensor, weight=1.0, scope=None):
   Returns:
     the L2 loss op.
   """
-  with tf.name_scope(scope, 'L2Loss', [tensor]):
+  with tf.name_scope('L2Loss'):
     weight = tf.convert_to_tensor(weight,
                                   dtype=tensor.dtype.base_dtype,
                                   name='loss_weight')
@@ -156,7 +156,7 @@ def cross_entropy_loss(logits, one_hot_labels, label_smoothing=0,
     A tensor with the softmax_cross_entropy loss.
   """
   logits.get_shape().assert_is_compatible_with(one_hot_labels.get_shape())
-  with tf.name_scope(scope, 'CrossEntropyLoss', [logits, one_hot_labels]):
+  with tf.name_scope('CrossEntropyLoss'):
     num_classes = one_hot_labels.get_shape()[-1].value
     one_hot_labels = tf.cast(one_hot_labels, logits.dtype)
     if label_smoothing > 0:
