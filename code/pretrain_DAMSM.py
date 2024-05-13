@@ -228,8 +228,8 @@ if __name__ == "__main__":
     mkdir_p(model_dir)
     mkdir_p(image_dir)
 
-    torch.cuda.set_device(cfg.GPU_ID)
-    cudnn.benchmark = True
+#    torch.cuda.set_device(cfg.GPU_ID)
+#    cudnn.benchmark = True
 
     # Get data loader ##################################################
     imsize = cfg.TREE.BASE_SIZE * (2 ** (cfg.TREE.BRANCH_NUM-1))
