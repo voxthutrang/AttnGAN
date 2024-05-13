@@ -216,7 +216,7 @@ def conv2d(inputs,
     num_filters_in = inputs.get_shape()[-1]
     weights_shape = [kernel_h, kernel_w,
                      num_filters_in, num_filters_out]
-    weights_initializer = tf.random.truncated_normal_initializer(stddev=stddev)
+    weights_initializer = ttf.compat.v1.random.truncated_normal(stddev=stddev)
     l2_regularizer = None
     if weight_decay and weight_decay > 0:
       l2_regularizer = losses.l2_regularizer(weight_decay)
@@ -288,7 +288,7 @@ def fc(inputs,
   with tf.compat.v1.variable_scope(scope, 'FC', [inputs], reuse=reuse):
     num_units_in = inputs.get_shape()[1]
     weights_shape = [num_units_in, num_units_out]
-    weights_initializer = tf.random.truncated_normal_initializer(stddev=stddev)
+    weights_initializer = ttf.compat.v1.random.truncated_normal(stddev=stddev)
     l2_regularizer = None
     if weight_decay and weight_decay > 0:
       l2_regularizer = losses.l2_regularizer(weight_decay)
