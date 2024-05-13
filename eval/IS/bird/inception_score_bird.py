@@ -220,9 +220,9 @@ def main(unused_argv=None):
                 variable_averages = \
                     tf.train.ExponentialMovingAverage(MOVING_AVERAGE_DECAY)
                 variables_to_restore = variable_averages.variables_to_restore()
-                saver = tf.train.Saver(variables_to_restore)
-                saver.restore(sess, FLAGS.checkpoint_dir)
-                print('Restore the model from %s).' % FLAGS.checkpoint_dir)
+#                saver = tf.train.Saver(variables_to_restore)
+#                saver.restore(sess, FLAGS.checkpoint_dir)
+#                print('Restore the model from %s).' % FLAGS.checkpoint_dir)
                 images = load_data(fullpath)
                 get_inception_score(sess, images, pred_op)
 
