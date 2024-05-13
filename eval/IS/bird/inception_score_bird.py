@@ -192,7 +192,7 @@ def main(unused_argv=None):
     with tf.Graph().as_default():
         config = tf.compat.v1.ConfigProto(allow_soft_placement=True)
         config.gpu_options.allow_growth = True
-        with tf.Session(config=config) as sess:
+        with tf.compat.v1.Session(config=config) as sess:
             with tf.device("/gpu:%d" % FLAGS.gpu):
                 # Number of classes in the Dataset label set plus 1.
                 # Label 0 is reserved for an (unused) background class.
