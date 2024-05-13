@@ -190,7 +190,7 @@ def inference(images, num_classes, for_training=False, restore_logits=True,
 def main(unused_argv=None):
     """Evaluate model on Dataset for a number of steps."""
     with tf.Graph().as_default():
-        config = tf.ConfigProto(allow_soft_placement=True)
+        config = tf.compat.v1.ConfigProto(allow_soft_placement=True)
         config.gpu_options.allow_growth = True
         with tf.Session(config=config) as sess:
             with tf.device("/gpu:%d" % FLAGS.gpu):
