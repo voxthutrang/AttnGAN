@@ -232,7 +232,7 @@ class TextDataset(data.Dataset):
                 print('Save to: ', filepath)
         else:
             with open(filepath, 'rb') as f:
-                x = pickle.load(file, encoding='latin1')
+                x = pickle.load(f, encoding='latin1')
                 train_captions, test_captions = x[0], x[1]
                 ixtoword, wordtoix = x[2], x[3]
                 del x
